@@ -1,18 +1,19 @@
-name: model-wine-quality
+name: CML
 on: [push]
 jobs:
-  run:
+  train-and-report:
     runs-on: ubuntu-latest
-    container: docker://dvcorg/cml-py3:latest
+    container: docker://ghcr.io/iterative/cml:0-dvc2-base1
     steps:
-      - uses: actions/checkout@v2
-      - name: cml_run
+      - uses: actions/checkout@v3
+      - name: Train model
         env:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Your ML workflow goes here
           pip install -r requirements.txt
-          python train.py
-          
-          echo "MODEL METRICS"
-          cat metrics.txt
+          python train.py  # generate plot.png
+
+          # Create CML report
+          cat metrics.txt >> report.md
+          echo '![](./plot.png "Confusion Matrix")' >> report.md
+          cml comment create report.md
