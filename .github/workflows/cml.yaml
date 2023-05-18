@@ -17,5 +17,12 @@ jobs:
           echo "MODEL METRICS" > report.md
           cat metrics.txt >> report.md
           
+          echo "Data_Viz" >> report.md
+          cml-publish feature_importance.png >> report.md
+          cml-publish residuals.png >> report.md
+          cml-send-comment report.md
+          
+          
+          
           
           
